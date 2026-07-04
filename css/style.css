@@ -751,3 +751,20 @@ a { transition: color 0.2s var(--cf-transition); }
   transition: background 0.2s;
 }
 .preview-item .preview-remove:hover { background: var(--cf-danger); }
+
+.cta-banner {
+  padding: 80px 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(124, 255, 60, 0.18), transparent 60%),
+    var(--cf-bg);
+  text-align: center;
+}
+.cta-banner h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 14px;
+}
+.cta-banner p {
+  color: var(--cf-muted);
+  margin-bottom: 28px;
+  font-size: 1.1rem;
+}
