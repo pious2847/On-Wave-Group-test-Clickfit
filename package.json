@@ -1,0 +1,26 @@
+{
+  "name": "clickfit-mockup",
+  "version": "1.0.0",
+  "description": "Click Fit - one-page sports/fitness website mockup. Reference implementation: HTML + CSS + Bootstrap 5 + jQuery on the frontend, Node.js + Express + Multer for image uploads, and a MySQL schema/stored-procedure script.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "fitness",
+    "sports",
+    "bootstrap",
+    "jquery",
+    "node",
+    "express",
+    "multer",
+    "mysql"
+  ],
+  "author": "Reference mockup",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}

@@ -192,4 +192,163 @@ $(function () {
         '(' + escapeHtml(textStatus || 'error') + ')</div>'
       );
     });
+
+
+  var $dropZone   = $('#dropZone');
+  var $fileInput  = $('#fileInput');
+  var $progress   = $('#uploadProgress');
+  var $progressBar= $progress.find('.progress-bar');
+  var $progressStatus = $progress.find('.upload-status');
+  var $previewGrid= $('#previewGrid');
+  var MAX_SIZE    = 5 * 1024 * 1024; // 5 MB
+  var ACCEPTED    = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+
+  $dropZone.on('click', function (e) {
+    if (e.target === $fileInput[0]) {
+      return;
+    }
+    $fileInput.trigger('click');
+  });
+  $dropZone.on('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      $fileInput.trigger('click');
+    }
+  });
+
+  $dropZone.on('dragover', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).addClass('is-dragover');
+  });
+  $dropZone.on('dragleave', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).removeClass('is-dragover');
+  });
+  $dropZone.on('drop', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).removeClass('is-dragover');
+    var files = e.originalEvent.dataTransfer.files;
+    handleFiles(files);
+  });
+
+  $fileInput.on('change', function () {
+    handleFiles(this.files);
+    this.value = ''; 
+  });
+
+  function isAccepted(file) {
+    if (ACCEPTED.indexOf(file.type) !== -1) return true;
+    var ext = (file.name.split('.').pop() || '').toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'webp', 'gif'].indexOf(ext) !== -1;
+  }
+
+  function handleFiles(files) {
+    if (!files || !files.length) return;
+
+    Array.prototype.forEach.call(files, function (file) {
+      if (!isAccepted(file)) {
+        addPreview(file, null, 'Unsupported file type', true);
+        return;
+      }
+      if (file.size > MAX_SIZE) {
+        addPreview(file, null, 'Exceeds 5 MB limit', true);
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        addPreview(file, e.target.result, 'Uploading...', false);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function addPreview(file, src, status, isError) {
+    var $item = $(
+      '<div class="preview-item">' +
+        '<img alt="' + escapeHtml(file.name) + '" />' +
+        '<button type="button" class="preview-remove" aria-label="Remove">' +
+          '<i class="fa-solid fa-xmark"></i>' +
+        '</button>' +
+        '<div class="preview-status">' +
+          '<i class="fa-solid fa-circle-notch fa-spin"></i>' +
+          '<span class="status-text"></span>' +
+        '</div>' +
+      '</div>'
+    );
+
+    $item.find('img').attr('src', src || '');
+    $item.find('.status-text').text(status);
+    if (isError) {
+      $item.addClass('is-error');
+      $item.find('.preview-status i')
+        .removeClass('fa-circle-notch fa-spin')
+        .addClass('fa-circle-exclamation');
+    }
+
+    $previewGrid.append($item);
+
+    $item.on('click', '.preview-remove', function () {
+      $item.remove();
+    });
+
+    if (!isError) {
+      uploadFile(file, $item);
+    }
+  }
+
+  function uploadFile(file, $item) {
+    var formData = new FormData();
+    formData.append('images', file);
+
+    $.ajax({
+      url: '/upload',
+      method: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      timeout: 30000,
+      xhr: function () {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener('progress', function (e) {
+          if (e.lengthComputable) {
+            var pct = Math.round((e.loaded / e.total) * 100);
+            $progress.removeClass('d-none');
+            $progressBar.css('width', pct + '%');
+            $progressStatus.text('Uploading ' + file.name + '... ' + pct + '%');
+          }
+        });
+        return xhr;
+      }
+    })
+      .done(function (response) {
+        $progressBar.css('width', '100%');
+        setTimeout(function () {
+          $progress.addClass('d-none');
+          $progressBar.css('width', '0%');
+        }, 600);
+
+        if (response && response.files && response.files.length) {
+          var saved = response.files[0];
+          $item.find('img').attr('src', saved.url);
+        }
+        $item.removeClass('is-error').addClass('is-done');
+        $item.find('.preview-status i')
+          .removeClass('fa-circle-notch fa-spin fa-circle-exclamation')
+          .addClass('fa-circle-check');
+        $item.find('.status-text').text('Uploaded');
+      })
+      .fail(function () {
+        $progress.addClass('d-none');
+        $item.addClass('is-error').removeClass('is-done');
+        $item.find('.preview-status i')
+          .removeClass('fa-circle-notch fa-spin')
+          .addClass('fa-circle-exclamation');
+        $item.find('.status-text').text('Upload failed');
+      });
+  }
+
 });
