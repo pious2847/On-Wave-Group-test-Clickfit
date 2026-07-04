@@ -209,6 +209,54 @@
     </div>
   </section>
 
+   <section id="join" class="upload-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5">
+          <div class="section-head text-start reveal">
+            <span class="section-tag">SHARE YOUR PROGRESS</span>
+            <h2>Drop a Gym Selfie</h2>
+            <p>
+              Drag and drop your progress photos here, or click to browse.
+              Files are uploaded to a Node.js backend and stored in the
+              <code>upload-images/</code> folder at the project root.
+            </p>
+            <ul class="upload-rules">
+              <li><i class="fa-solid fa-check"></i> JPG, PNG, WEBP, GIF</li>
+              <li><i class="fa-solid fa-check"></i> Max 5 MB per image</li>
+              <li><i class="fa-solid fa-check"></i> Stored locally &mdash; no cloud</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <form id="uploadForm" class="reveal" data-delay="100">
+            
+            <div id="dropZone" class="drop-zone" tabindex="0" role="button"
+              aria-label="Drag and drop images or click to upload">
+              
+              <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+              <p class="drop-text"><strong>Drop images here</strong> or click to browse</p>
+              <p class="drop-hint">Supports JPG, PNG, WEBP, GIF up to 5 MB</p>
+              <input type="file" id="fileInput" name="images" multiple accept="image/*" hidden />
+            </div>
+
+            <div id="uploadProgress" class="upload-progress d-none">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                  style="width: 0%"></div>
+              </div>
+              <p class="upload-status text-muted mt-2 mb-0"></p>
+            </div>
+
+            <div id="previewGrid" class="preview-grid mt-4"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
 </body>
 
 </html>
