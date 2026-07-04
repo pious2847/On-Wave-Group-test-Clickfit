@@ -125,9 +125,9 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(PORT, function () {
-  console.log('==================================================');
+  console.log('===================================');
   console.log('  Click Fit server');
   console.log('  Local:  http://localhost:' + PORT);
   console.log('  Uploads saved to: ' + UPLOAD_DIR);
-  console.log('==================================================');
+  console.log('========================================');
 });
