@@ -143,6 +143,27 @@
     </div>
   </section>
 
+    <section id="programs" class="programs-section">
+    <div class="container">
+      <div class="section-head text-center reveal">
+        <span class="section-tag">FROM THE COMMUNITY</span>
+        <h2>Today's Featured Picks</h2>
+        <p>
+          These items are loaded live from a public REST endpoint
+          (<code>https://api.restful-api.dev/objects</code>) using a jQuery AJAX
+          call when the page loads. Refresh to see them re-fetch.
+        </p>
+      </div>
+
+      <div id="apiStatus" class="text-center mb-4">
+        <div class="spinner-border text-warning" role="status"></div>
+        <p class="mt-2 mb-0 text-muted">Fetching live data&hellip;</p>
+      </div>
+
+      <div id="apiGrid" class="row g-4"></div>
+    </div>
+  </section>
+
 </body>
 
 </html>
