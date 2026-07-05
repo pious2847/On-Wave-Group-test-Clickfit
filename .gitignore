@@ -1,6 +1,1 @@
 node_modules/
-upload-images/*
-!upload-images/.gitkeep
-.DS_Store
-*.log
-.env
